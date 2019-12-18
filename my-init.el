@@ -19,5 +19,6 @@
   (package-install 'use-package))
 
 (require 'init-theme)
+(require 'init-common)
 ;; Use my init file in org-mode to set other packages
 (org-babel-load-file (expand-file-name "~/.emacs.d/myinit.org"))
