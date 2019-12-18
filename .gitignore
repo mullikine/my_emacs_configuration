@@ -6,6 +6,7 @@
 # And all the file types you're interested in.
 !*.org
 .#*
+
 # Add all my .el configuration
 !lisp/
 !lisp/** 
