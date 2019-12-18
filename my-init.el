@@ -20,5 +20,7 @@
 
 (require 'init-theme)
 (require 'init-common)
+(require 'init-swiper-ivy-counsel)
+(require 'init-parentheses)
 ;; Use my init file in org-mode to set other packages
 (org-babel-load-file (expand-file-name "~/.emacs.d/myinit.org"))

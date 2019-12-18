@@ -1,255 +1,4 @@
-# * Set emacs theme
-#   #+begin_src emacs-lisp
-#     ;; (defun my-customize-for-theme ()
-#     ;;   ;; M-x customize-face
-#     ;;   ;; show-paren-match to view different options #D4FF00
-#     ;;   (set-face-attribute 'show-paren-match nil
-#     ;;                       :underline t
-#     ;;                       :foreground "HotPink"
-#     ;;                       :background nil
-#     ;;                       :weight 'ultrabold)
-
-#     ;;   (set-face-attribute 'hl-line nil
-#     ;;                       :underline nil
-#     ;;                       :foreground 'unspecified
-#     ;;                       :background "#3e4446")
-#     ;;   (set-face-attribute 'highlight nil :background "#3e4446" :foreground 'unspecified)
-
-#     ;;   ;; specify the selection region
-#     ;;   (set-face-attribute 'region nil :background "#666")
-
-#     ;;   (set-cursor-color "#D4FF00") 
-#     ;;   (setq-default cursor-type '(bar . 2)))
-
-#     ;; (load-theme 'wombat)
-#     ;; (add-hook 'after-init-hook 'my-customize-for-theme)
-
-
-#     (use-package doom-themes
-#       :init
-#       (setq doom-themes-enable-bold nil    
-#             doom-themes-enable-italic nil)
-#       :ensure t
-#       :config
-#       (progn
-#         (load-theme 'doom-vibrant t)
-#         (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-#         ;; (doom-themes-treemacs-config)
-#         ;; Corrects (and improves) org-mode's native fontification.
-#         ;; (doom-themes-org-config)
-#         (set-cursor-color "HotPink") 
-#         (setq-default cursor-type '(bar . 2))))
-
-#     ;; (use-package all-the-icons
-#     ;;   :ensure t
-#     ;;   :config
-#     ;;   (progn
-#     ;;     (all-the-icons-install-fonts :name "hyperion_z@outlook.com")))
-#   #+end_src
-
-#   #+RESULTS:
-#   : t
-
-# * Minimal UI
-#   #+begin_src emacs-lisp
-#     (scroll-bar-mode -1)
-#     (tool-bar-mode   -1)
-#     (tooltip-mode    -1)
-#     (menu-bar-mode   -1)
-#   #+end_src
-
-# * Set environment path
-#   #+begin_src emacs-lisp
-#     (if (string-equal system-type "windows-nt")
-#         (progn
-#           (princ "set windows environment"))
-#       (setq exec-path (append exec-path '("/usr/local/bin"))))
-#   #+end_src
-
 * Interface tweaks
-** set font
-   * Install Monaco font in Ubuntu:
-     * check [[https://github.com/cstrap/monaco-font][How To]].
-     * ~./install-font-ubuntu.sh http://www.gringod.com/wp-upload/software/Fonts/Monaco_Linux.ttf~
-     * ~./install-font-ubuntu.sh http://www.gringod.com/wp-upload/software/Fonts/Monaco_Linux.ttf~
-     * ~mkdir ~/.fonts~
-     * ~cp Monaco_Linux.ttf ~/.fonts/~
-   * [[http://ergoemacs.org/emacs/emacs_list_and_set_font.html][how to find the current font used]]
-   * [[http://ergoemacs.org/emacs/emacs_unicode_fonts.html][best unicode fonts for programmer]]
-   #+begin_src emacs-lisp
-     ;; to adjust font dynamically
-     ;; C-xC-+ and C-xC-- to increase or decrease the buffer text size
-
-     (cond
-      ((string-equal system-type "windows-nt")
-       (set-default-font "Consolas 12"))
-      ((string-equal system-type "gnu/linux")
-       (set-default-font "Ubuntu Mono 12"))
-      ((string-equal system-type "darwin")
-       (if (member "Source Code Pro" (font-family-list))
-           (set-default-font "Source Code Pro 12")
-         (set-default-font "Menlo 11"))))
-   #+end_src
-
-   #+RESULTS:
-
-** Mode line
-   #+begin_src emacs-lisp
-     (use-package powerline
-       :ensure t
-       :config
-       (progn
-         (powerline-default-theme)))
-
-     (use-package smart-mode-line
-       :ensure t
-       :config
-       (setq sml/no-confirm-load-theme t)
-       (sml/setup))
-   #+end_src
-
-   #+RESULTS:
-   : t
-
-** alight commands
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'align-load-hook #'(lambda ()
-                                    (add-to-list 'align-rules-list
-                                                 '(text-column-whitespace
-                                                   (regexp  . "\\(^\\|\\S-\\)\\([ \t]+\\)")
-                                                   (group   . 2)
-                                                   (modes   . align-text-modes)
-                                                   (repeat  . t)))))
-   #+END_SRC
-
-   #+RESULTS:
-
-** adjust meta key
-   #+BEGIN_SRC emacs-lisp
-     ;;; I prefer cmd key for meta
-     (setq mac-option-key-is-meta nil
-	   mac-command-key-is-meta t
-	   mac-command-modifier 'meta
-	   mac-option-modifier 'none)
-   #+END_SRC
-
-   #+RESULTS:
-   : none
-
-** set global key-bindings
-   Use "C-h k" to check the meaning of command for which the current key-binding belongs to in current mode.
-   #+begin_src emacs-lisp
-     ;; use cmd + n and cmd + p to select next and previous lines
-     (global-set-key (kbd "s-n") (kbd "C-S-n"))
-     (global-set-key (kbd "s-p") (kbd "C-S-p"))
-     ;; use c-z to undo
-     (global-set-key (kbd "C-z") #'undo)
-
-     ;; do code comment 
-     (global-set-key (kbd "C-/") 'comment-or-uncomment-region)
-
-     ;; use c-c c-c to execute a lisp function
-     (global-set-key (kbd "C-c C-c") 'eval-last-sexp)
-
-     ;; keyboard macro
-     (global-set-key (kbd "<f2>") #'kmacro-start-macro)
-     (global-set-key (kbd "<f3>") #'kmacro-end-macro)
-     (global-set-key (kbd "<f4>") 'call-last-kbd-macro)
-
-
-     ;; use f10 to format whole buffer
-     (global-set-key (kbd "<f10>") (progn
-				     #'mark-whole-buffer
-				     #'indent-region))
-     ;; (global-set-key (kbd "<f6>") 'revert-buffer)
-   #+end_src
-
-   #+RESULTS:
-   : revert-buffer
-** set buffer and shell
-   #+begin_src emacs-lisp
-     ;; no need for prompt for confirm when execute code block in org-mode
-     ;; (setq org-confirm-babel-evaluate nil)
-
-     ;; make sure environment variables inside Emacs look the same as in the user's shell
-     (use-package exec-path-from-shell
-       :defer 2
-       :ensure t
-       :config
-       (progn
-         (when (memq window-system '(mac ns x))
-           (exec-path-from-shell-initialize))))
-   #+end_src
-
-   #+RESULTS:
-   : t
-
-** set line number
-   #+BEGIN_SRC emacs-lisp
-     (use-package nlinum
-       :defer t
-       :ensure t
-       :config
-       (progn
-         (global-nlinum-mode t)
-         ;; Preset `nlinum-format' for minimum width.
-         (defun my-nlinum-mode-hook ()
-           (when nlinum-mode
-             (setq-local nlinum-format
-                         (concat "%" (number-to-string
-                                      ;; Guesstimate number of buffer lines.
-                                      (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
-                                 "d"))))
-         (add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
-
-         ;; [[https://www.emacswiki.org/emacs/LineNumbers][solve bug with emacs daemon mode]]
-         (defun initialize-nlinum (&optional frame)
-           (require 'nlinum)
-           (add-hook 'prog-mode-hook 'nlinum-mode))
-         (when (daemonp)
-           (add-hook 'window-setup-hook 'initialize-nlinum)
-           (defadvice make-frame (around toggle-nlinum-mode compile activate)
-             (nlinum-mode -1) ad-do-it (nlinum-mode 1)))))
-
-     (add-hook 'after-init-hook 'nlinum-mode)
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-** use y-or-n 
-   #+begin_src emacs-lisp
-     (fset 'yes-or-no-p 'y-or-n-p)
-
-   #+end_src
-
-   #+RESULTS:
-   : y-or-n-p
-
-** set adaptive-wrap
-   #+BEGIN_SRC emacs-lisp
-     (use-package adaptive-wrap
-       :defer 1
-       :ensure t
-       :config
-       (progn
-         ;; (setq-default adaptive-wrap-extra-indent 2)
-         (global-visual-line-mode t)
-         (add-hook 'visual-line-mode-hook #'adaptive-wrap-prefix-mode)))
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-** set scroll screen
-   #+begin_src emacs-lisp
-     (setq scroll-step 1)
-     (setq scroll-margin 1)
-     (setq scroll-conservatively 100000)
-   #+end_src
-
-   #+RESULTS:
-   : 100000
 
 ** highlight current line
    #+begin_src emacs-lisp
@@ -318,118 +67,118 @@
    #+RESULTS:
    : 40
 
-* Swiper/Ivy/Counsel
-  Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
-  #+begin_src emacs-lisp
-    ;; it looks like counsel is a requirement for swiper
-    (use-package counsel
-      :defer 1
-      :ensure t
-      :bind
-      (("M-y" . counsel-yank-pop)
-       :map ivy-minibuffer-map
-       ("M-y" . ivy-next-line)))
+# * Swiper/Ivy/Counsel
+#   Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
+#   #+begin_src emacs-lisp
+#     ;; it looks like counsel is a requirement for swiper
+#     (use-package counsel
+#       :defer 1
+#       :ensure t
+#       :bind
+#       (("M-y" . counsel-yank-pop)
+#        :map ivy-minibuffer-map
+#        ("M-y" . ivy-next-line)))
 
-    (use-package ivy
-      :defer 1
-      :ensure t
-      :diminish (ivy-mode)
-      :bind (("C-x b" . ivy-switch-buffer))
-      :config
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-count-format "%d/%d ")
-      (setq ivy-display-style 'fancy))
+#     (use-package ivy
+#       :defer 1
+#       :ensure t
+#       :diminish (ivy-mode)
+#       :bind (("C-x b" . ivy-switch-buffer))
+#       :config
+#       (ivy-mode 1)
+#       (setq ivy-use-virtual-buffers t)
+#       (setq ivy-count-format "%d/%d ")
+#       (setq ivy-display-style 'fancy))
 
 
-    (use-package swiper
-      :after (ivy counsel)
-      :defer
-      :ensure try
-      :bind (("C-s" . swiper)
-             ("C-c C-r" . ivy-resume)
-             ;; ("C-x C-f" . counsel-find-file)
-             ("M-x" . counsel-M-x))
-      :config
-      (progn
-        (ivy-mode 1)
-        (setq ivy-use-virtual-buffers t)
-        (setq ivy-display-style 'fancy)
-        (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
-  #+end_src
+#     (use-package swiper
+#       :after (ivy counsel)
+#       :defer
+#       :ensure try
+#       :bind (("C-s" . swiper)
+#              ("C-c C-r" . ivy-resume)
+#              ;; ("C-x C-f" . counsel-find-file)
+#              ("M-x" . counsel-M-x))
+#       :config
+#       (progn
+#         (ivy-mode 1)
+#         (setq ivy-use-virtual-buffers t)
+#         (setq ivy-display-style 'fancy)
+#         (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
+#   #+end_src
   
 * Keep parentheses balanced
-** Paredit
-   #+begin_src emacs-lisp
-     (use-package paredit
-       :defer 1
-       :ensure t
-       :init
-       (progn
-         (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-         ;; (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-         ;; (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-         ;; (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-         ;; ;; (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-         ;; (add-hook 'sly-mode-hook             #'enable-paredit-mode)
-         ;; (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-         ;; (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-         ;; (add-hook 'racket-mode-hook           #'enable-paredit-mode)
+# ** Paredit
+#    #+begin_src emacs-lisp
+#      (use-package paredit
+#        :defer 1
+#        :ensure t
+#        :init
+#        (progn
+#          (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+#          ;; (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+#          ;; (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+#          ;; (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+#          ;; ;; (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+#          ;; (add-hook 'sly-mode-hook             #'enable-paredit-mode)
+#          ;; (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+#          ;; (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+#          ;; (add-hook 'racket-mode-hook           #'enable-paredit-mode)
 
-         ;; paredit with eldoc
-         ;; (require 'eldoc) 
-         ;; (eldoc-add-command
-         ;;  'paredit-backward-delete
-         ;;  'paredit-close-round)
+#          ;; paredit with eldoc
+#          ;; (require 'eldoc) 
+#          ;; (eldoc-add-command
+#          ;;  'paredit-backward-delete
+#          ;;  'paredit-close-round)
 
-         ;; paredit with electric return
-         (defvar electrify-return-match
-           "[\]}\)\"]"
-           "If this regexp matches the text after the cursor, do an \"electric\"
-             return.")
-         (defun electrify-return-if-match (arg)
-           "If the text after the cursor matches `electrify-return-match' then
-             open and indent an empty line between the cursor and the text.  Move the
-             cursor to the new line."
-           (interactive "P")
-           (let ((case-fold-search nil))
-             (if (looking-at electrify-return-match)
-                 (save-excursion (newline-and-indent)))
-             (newline arg)
-             (indent-according-to-mode)))
-         ;; Using local-set-key in a mode-hook is a better idea.
-         (global-set-key (kbd "RET") 'electrify-return-if-match)))
-   #+end_src
-** complements to paredit
-   #+begin_src emacs-lisp
-     ;; Show matching arenthesis
-     (show-paren-mode 1)
-     (setq show-paren-delay 0)
-     (require 'paren)
-     ;; (set-face-background 'show-paren-match (face-background 'default))
-   #+end_src
+#          ;; paredit with electric return
+#          (defvar electrify-return-match
+#            "[\]}\)\"]"
+#            "If this regexp matches the text after the cursor, do an \"electric\"
+#              return.")
+#          (defun electrify-return-if-match (arg)
+#            "If the text after the cursor matches `electrify-return-match' then
+#              open and indent an empty line between the cursor and the text.  Move the
+#              cursor to the new line."
+#            (interactive "P")
+#            (let ((case-fold-search nil))
+#              (if (looking-at electrify-return-match)
+#                  (save-excursion (newline-and-indent)))
+#              (newline arg)
+#              (indent-according-to-mode)))
+#          ;; Using local-set-key in a mode-hook is a better idea.
+#          (global-set-key (kbd "RET") 'electrify-return-if-match)))
+#    #+end_src
+# ** complements to paredit
+#    #+begin_src emacs-lisp
+#      ;; Show matching arenthesis
+#      (show-paren-mode 1)
+#      (setq show-paren-delay 0)
+#      (require 'paren)
+#      ;; (set-face-background 'show-paren-match (face-background 'default))
+#    #+end_src
 
-   #+RESULTS:
+#    #+RESULTS:
 
 
-** smartparens
-   [[https://github.com/Fuco1/smartparens][smartparens]] is an excellent (newer) alternative to paredit. Many Clojure hackers have adopted it recently and you might want to give it a try as well.
-   #+BEGIN_SRC emacs-lisp
-     (use-package smartparens
-       :defer
-       :ensure t
-       :config
-       (progn
-         (add-hook 'js-mode-hook #'smartparens-mode)
-         (add-hook 'typescript-mode-hook #'smartparens)
-         (add-hook 'c-mode-hook #'smartparens-mode)
-         (add-hook 'c++-mode-hook #'smartparens-mode)
-         (add-hook 'web-mode-hook #'smartparens-mode)
-         (add-hook 'shell-script-mode 'smartparens-mode)))
-   #+END_SRC
+# ** smartparens
+#    [[https://github.com/Fuco1/smartparens][smartparens]] is an excellent (newer) alternative to paredit. Many Clojure hackers have adopted it recently and you might want to give it a try as well.
+#    #+BEGIN_SRC emacs-lisp
+#      (use-package smartparens
+#        :defer
+#        :ensure t
+#        :config
+#        (progn
+#          (add-hook 'js-mode-hook #'smartparens-mode)
+#          (add-hook 'typescript-mode-hook #'smartparens)
+#          (add-hook 'c-mode-hook #'smartparens-mode)
+#          (add-hook 'c++-mode-hook #'smartparens-mode)
+#          (add-hook 'web-mode-hook #'smartparens-mode)
+#          (add-hook 'shell-script-mode 'smartparens-mode)))
+#    #+END_SRC
 
-   #+RESULTS:
-   : t
+#    #+RESULTS:
+#    : t
 
 * Helm
   #+BEGIN_SRC emacs-lisp
@@ -600,12 +349,12 @@
       :init
       :config
       (progn
-	(setq aw-scope 'frame)
-	(global-set-key (kbd "C-x O") 'other-frame)
-	(global-set-key [remap other-window] 'ace-window)
-	(custom-set-faces
-	 '(aw-leading-char-face
-	   ((t (:inherit ace-jump-face-foreground :height 3.0)))))))
+        (setq aw-scope 'frame)
+        (global-set-key (kbd "C-x O") 'other-frame)
+        (global-set-key [remap other-window] 'ace-window)
+        (custom-set-faces
+         '(aw-leading-char-face
+           ((t (:inherit ace-jump-face-foreground :height 3.0)))))))
   #+end_src
 
   #+RESULTS:
