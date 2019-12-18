@@ -6,7 +6,9 @@
 # And all the file types you're interested in.
 !*.org
 .#*
-!/lisp/
+# Add all my .el configuration
+!lisp/
+!lisp/** 
 !my-init.el
 
 # Add all the files within folder org-templates
